@@ -12,7 +12,7 @@
     </div>
     
     <div v-else class="bg-gray-100 p-6 rounded-lg">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex flex-col items-center justify-between mb-4">
         <div>
           <p class="text-sm text-gray-500">当前账户</p>
           <p class="text-lg font-medium truncate max-w-xs break-all">{{ currentAddress }}</p>
