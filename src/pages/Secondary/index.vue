@@ -4,6 +4,6 @@
 </template>
 
 <script setup lang="ts"> 
-import { TronWeb, utils as TronWebUtils, Trx, TransactionBuilder, Contract, Event, Plugin } from 'tronweb'
+// import { TronWeb, utils as TronWebUtils, Trx, TransactionBuilder, Contract, Event, Plugin } from 'tronweb'
 
 </script>

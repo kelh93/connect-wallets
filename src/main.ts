@@ -4,6 +4,7 @@ import App from './App.vue'
 import './main.css'
 import router from './router'
 import VConsole from 'vconsole'
+import './global.d.ts'
 
 new VConsole()
 
