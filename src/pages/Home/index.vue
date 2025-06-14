@@ -1,7 +1,6 @@
 <template>
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">TronLink 钱包连接示例</h1>
-    
     <div v-if="!isConnected" class="flex flex-col items-center">
       <p class="mb-4 text-gray-600">请点击按钮连接 TronLink 钱包</p>
       <button 
@@ -16,7 +15,7 @@
       <div class="flex items-center justify-between mb-4">
         <div>
           <p class="text-sm text-gray-500">当前账户</p>
-          <p class="text-lg font-medium truncate max-w-xs">{{ currentAddress }}</p>
+          <p class="text-lg font-medium truncate max-w-xs break-all">{{ currentAddress }}</p>
         </div>
         <div class="text-right">
           <p class="text-sm text-gray-500">余额</p>
