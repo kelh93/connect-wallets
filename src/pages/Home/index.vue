@@ -1,63 +1,62 @@
 <template>
-  <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">TronLink 钱包连接示例</h1>
+  <div class="mx-auto p-2">
+    <h1 class="text-base font-bold mb-4">TronLink 钱包连接示例</h1>
     <div v-if="!isConnected" class="flex flex-col items-center">
-      <p class="mb-4 text-gray-600">请点击按钮连接 TronLink 钱包</p>
-      <button 
+      <p class="text-sm mb-4 text-gray-600">请点击按钮连接 TronLink 钱包</p>
+      <van-button 
         @click="connectWallet" 
+        size="small"
+        type="primary"
         class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-all"
       >
         连接钱包
-      </button>
+      </van-button>
     </div>
     
-    <div v-else class="bg-gray-100 p-6 rounded-lg">
-      <div class="flex flex-col items-center justify-between mb-4">
-        <div>
-          <p class="text-sm text-gray-500">当前账户</p>
-          <p class="text-lg font-medium truncate max-w-xs break-all">{{ currentAddress }}</p>
+    <div v-else class="bg-gray-100 p-3 rounded-lg">
+      <div class="text-sm mb-4">
+        <div class="text-sm flex items-center mb-4">
+          <p class="text-gray-500">当前账户</p>
+          <p class="font-medium truncate max-w-xs break-all">{{ getShortAddress(currentAddress) }}</p>
         </div>
-        <div class="text-right">
-          <p class="text-sm text-gray-500">余额</p>
-          <p class="text-lg font-medium">{{ balance }} TRX</p>
+        <div class="flex items-center">
+          <van-field v-model="balance" label="余额(TRX)" disabled />
         </div>
       </div>
       
       <div class="mt-6">
-        <h3 class="text-lg font-semibold mb-3">转账</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">接收地址</label>
-            <input 
-              v-model="transferTo" 
-              type="text" 
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+            <van-field v-model="transferTo" label="转账接收地址" placeholder="请输入" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">金额 (TRX)</label>
-            <input 
-              v-model.number="transferAmount" 
-              type="number" 
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+            <van-field v-model="transferAmount" label="金额 (TRX)" placeholder="请输入" />
           </div>
         </div>
-        <button 
+        <van-button 
           @click="sendTransaction" 
-          class="mt-4 bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-all"
+          size="small"
+          type="primary"
+          class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-all"
           :disabled="!transferTo || transferAmount <= 0"
         >
           发送转账
-        </button>
+        </van-button>
       </div>
       
       <div v-if="transactionResult" class="mt-6 p-4 bg-green-100 rounded-lg">
-        <p class="font-medium">交易成功!</p>
-        <p class="text-sm break-all">
-          交易哈希: <a href="https://tronscan.org/#/transaction/{{ transactionResult.txid }}" target="_blank" class="text-blue-600">{{ transactionResult.txid }}</a>
+        <p class="font-medium">交易成功!</p>        
+        <van-field v-model="transactionResult.txid" label="交易哈希" placeholder="请输入">
+          <template #button>
+            <van-button @click="copyTransactionHash" type="primary" size="small" class="ml-2">
+              COPY
+            </van-button>
+          </template>
+        </van-field>
+        <!-- <p class="text-sm break-all">
+          测试网交易哈希: <a class="text-blue-600">{{ transactionResult.txid }}</a>
           <span class="ml-2 text-sm text-gray-500 cursor-pointer" @click="copyTransactionHash">copy</span>
-        </p>
+        </p> -->
       </div>
       
       <div v-if="errorMessage" class="mt-6 p-4 bg-red-100 rounded-lg">
@@ -71,7 +70,7 @@
 import { ref, onMounted } from 'vue';
 
 // 状态管理
-const isConnected = ref(false);
+const isConnected = ref(true);
 const currentAddress = ref('');
 const balance = ref(0);
 const transferTo = ref('');
@@ -205,6 +204,11 @@ const copyTransactionHash = async () => {
     alert('复制哈希失败');
   }
 };
+
+const getShortAddress = (address: string) => {
+  if (!address) return '';
+  return address.slice(0, 6) + '...' + address.slice(-4);
+}
 
 // 组件挂载时检测钱包状态
 onMounted(() => {
