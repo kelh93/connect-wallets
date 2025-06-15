@@ -54,7 +54,10 @@
       
       <div v-if="transactionResult" class="mt-6 p-4 bg-green-100 rounded-lg">
         <p class="font-medium">交易成功!</p>
-        <p class="text-sm">交易哈希: <a href="https://tronscan.org/#/transaction/{{ transactionResult.txid }}" target="_blank" class="text-blue-600">{{ transactionResult.txid }}</a></p>
+        <p class="text-sm break-all">
+          交易哈希: <a href="https://tronscan.org/#/transaction/{{ transactionResult.txid }}" target="_blank" class="text-blue-600">{{ transactionResult.txid }}</a>
+          <span class="ml-2 text-sm text-gray-500 cursor-pointer" @click="copyTransactionHash">copy</span>
+        </p>
       </div>
       
       <div v-if="errorMessage" class="mt-6 p-4 bg-red-100 rounded-lg">
@@ -188,6 +191,18 @@ const sendTransaction = async () => {
   } catch (error: any) {
     errorMessage.value = error.message || '转账失败';
     console.error('转账错误:', error);
+  }
+};
+
+// 复制交易哈希
+const copyTransactionHash = async () => {
+  if (!transactionResult.value) return;
+  try {
+    await navigator.clipboard.writeText(transactionResult.value.txid);
+    alert('交易哈希已复制');
+  } catch (error) {
+    console.error('复制哈希错误:', error);
+    alert('复制哈希失败');
   }
 };
 
