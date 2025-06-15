@@ -107,7 +107,7 @@ const connectWallet = async () => {
     if (!isTronLinkInstalled()) {
       throw new Error('请安装并解锁 TronLink 钱包扩展');
     }
-    
+    console.log('window.tron', window.tron)
     // 请求账户权限
     const accounts = await window.tron.request({ method: 'tron_requestAccounts' });
     if (!accounts || accounts.length === 0) {
