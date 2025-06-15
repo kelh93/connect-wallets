@@ -95,7 +95,9 @@ const connectWallet = async () => {
     if (!accounts || accounts.length === 0) {
       throw new Error('用户拒绝授权');
     }
-    
+    // 切换到测试网
+    await window.tron.tronWeb.setProvider('https://shasta.tronex.io/');
+
     // 更新状态
     currentAddress.value = window.tron.tronWeb.defaultAddress.base58;
     isConnected.value = true;
