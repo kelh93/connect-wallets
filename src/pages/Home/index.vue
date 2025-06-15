@@ -63,7 +63,7 @@
       </div>
       <!-- 输入地址查询余额 -->
        <div class="mt-6">
-        <van-field v-model="transferTo" label="查询余额地址" placeholder="请输入" />
+        <van-field class="mb-4" v-model="transferTo" label="查询余额地址" placeholder="请输入" />
         <van-button @click="queryBalance" size="small" type="primary" class="ml-2">
           查询余额
         </van-button>
