@@ -27,7 +27,7 @@
       <div class="mt-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <van-field v-model="transferTo" label="转账接收地址" placeholder="请输入" />
+            <van-field class="text-sm" v-model="transferTo" label="转账接收地址" placeholder="请输入" />
           </div>
           <div>
             <van-field v-model="transferAmount" label="金额 (TRX)" placeholder="请输入" />
@@ -58,10 +58,22 @@
           <span class="ml-2 text-sm text-gray-500 cursor-pointer" @click="copyTransactionHash">copy</span>
         </p> -->
       </div>
-      
       <div v-if="errorMessage" class="mt-6 p-4 bg-red-100 rounded-lg">
         <p class="font-medium text-red-800">错误: {{ errorMessage }}</p>
       </div>
+      <!-- 输入地址查询余额 -->
+       <div class="mt-6">
+        <van-field v-model="transferTo" label="查询余额地址" placeholder="请输入" />
+        <van-button @click="queryBalance" size="small" type="primary" class="ml-2">
+          查询余额
+        </van-button>
+      </div>
+      <!-- 查询余额结果 -->
+      <div v-if="queryResult" class="mt-6 p-4 bg-green-100 rounded-lg">
+        <p class="font-medium">查询余额成功!</p>
+        <van-field v-model="queryResult.balance" label="余额(TRX)" disabled />
+      </div>
+      
     </div>
   </div>
 </template>
@@ -73,10 +85,14 @@ import { ref, onMounted } from 'vue';
 const isConnected = ref(true);
 const currentAddress = ref('');
 const balance = ref(0);
-const transferTo = ref('');
+const transferTo = ref('TDM4ZhQSHkRj71VR6uF9mCAuVK2KN9VEUn');
 const transferAmount = ref(0);
 const transactionResult = ref<{txid: string}|null>(null);
 const errorMessage = ref('');
+const queryResult = ref<{address: string, balance: number}>({
+  address: '',
+  balance: 0
+});
 
 // 检测 TronLink 是否安装
 const isTronLinkInstalled = () => {
@@ -208,6 +224,23 @@ const copyTransactionHash = async () => {
 const getShortAddress = (address: string) => {
   if (!address) return '';
   return address.slice(0, 6) + '...' + address.slice(-4);
+}
+
+const queryBalance = async () => {
+  try {
+    if (!transferTo.value) {
+      throw new Error('请输入查询地址');
+    }
+    const tronWeb = window.tron.tronWeb;
+    const balanceInSun = await tronWeb.trx.getBalance(transferTo.value);
+    queryResult.value = {
+      address: transferTo.value,
+      balance: parseFloat(tronWeb.fromSun(balanceInSun))
+    };
+  } catch (error: any) {
+    errorMessage.value = error.message || '查询余额失败';
+    console.error('查询余额错误:', error);
+  }
 }
 
 // 组件挂载时检测钱包状态
